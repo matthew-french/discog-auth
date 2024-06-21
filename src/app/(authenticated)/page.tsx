@@ -4,6 +4,7 @@ import Image from "next/image";
 
 import { getUserCollection } from '@/lib/actions'
 import { getAuthSession } from '@/utils/serverUtils'
+import { getIdentity } from '@/lib/actions'
 import { redirect } from 'next/navigation'
 import Link from "next/link"
 
@@ -29,9 +30,9 @@ export default async function Home() {
 
   const folders: Folder[] = await getUserCollection(session)
 
-  // const identity = await getIdentity(session)
+  const identity = await getIdentity(session)
 
-  // console.log('identity', identity)
+  console.log('identity', identity)
 
   return (
     <>

@@ -1,3 +1,17 @@
+type Record = {
+  coverImage: string;
+  id: number;
+  thumb: string;
+  year: number;
+  title: string;
+  genres: string;
+  artist: string;
+  styles: string;
+  masterUrl: string;
+  resourceUrl: string;
+  formats: string;
+};
+
 interface DiscogRecord {
   id: number;
   instance_id: number;
@@ -27,7 +41,7 @@ interface Formats {
   text: string;
 }
 
-export interface Artist {
+interface Artist {
   anv: string;
   id: string;
   name: string;
@@ -36,4 +50,5 @@ export interface Artist {
   tracks: string;
 }
 
-export default DiscogRecord;
+// export all interfaces
+export type { Record, DiscogRecord, BasicInformation, Formats, Artist };

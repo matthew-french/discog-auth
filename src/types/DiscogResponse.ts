@@ -1,4 +1,4 @@
-import DiscogRecord from "./DiscogRecord";
+import { DiscogRecord } from "./DiscogRecord";
 
 interface DiscogResponse {
   pagination: Pagination;

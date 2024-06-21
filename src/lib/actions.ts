@@ -1,31 +1,16 @@
 import { customGet } from '@/utils/serverUtils'
-// https://www.discogs.com/developers/#page:user-collection,header:user-collection-collection
-
-// GET
-// /users/{username}/collection/folders
-
-// Body
-// {ß
-//   "folders": [
-//     {
-//       "id": 0,
-//       "count": 23,
-//       "name": "All",
-//       "resource_url": "https://api.discogs.com/users/example/collection/folders/0"
-//     },
-//     {
-//       "id": 1,
-//       "count": 20,
-//       "name": "Uncategorized",
-//       "resource_url": "https://api.discogs.com/users/example/collection/folders/1"
-//     }
-//   ]
-// }
 
 import {
   AuthSession,
   Folder,
 } from '@/types/types'
+
+interface SearchParams {
+  page: string;
+  perPage: string;
+  sort: string;
+  sortOrder: string;
+}
 
 export const getArtist = async (session: AuthSession, artistId: string): Promise<any> => {
   const data = await customGet(
@@ -57,20 +42,12 @@ export async function getUserCollection(session: AuthSession): Promise<Folder[]>
 export const getFolderById = async (
   session: AuthSession,
   folderId = '1' as string,
-  searchParams = {
-    page: '1',
-    perPage: '100',
-    sort: 'artist',
-    sortOrder: 'asc',
-  } as {
-    page: string;
-    perPage: string;
-    sort: string;
-    sortOrder: string;
-  }
+  params: Partial<SearchParams>
 ): Promise<any> => {
+  const defaultParams: SearchParams = { page: '1', perPage: '12', sort: 'artist', sortOrder: 'asc' };
+  const searchParams: SearchParams = { ...defaultParams, ...params };
+  const { page, perPage, sort, sortOrder } = searchParams;
 
-  const { page = '1', perPage = '52', sort = 'artist', sortOrder = 'asc'} = searchParams;
 
   console.log('searchParams', searchParams)
 

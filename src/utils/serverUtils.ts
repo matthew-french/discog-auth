@@ -18,7 +18,7 @@ const getHeaders = (session: AuthSession):Headers => {
   return {
     'Content-Type': 'application/json',
     'Authorization': `OAuth oauth_consumer_key="${process.env.DISCOGS_CONSUMER_KEY}", oauth_nonce="${oauth_nonce}", oauth_token="${session.user.accessToken}", oauth_signature="${process.env.DISCOG_SECRET}&${session.user.tokenSecret}", oauth_signature_method="PLAINTEXT", oauth_timestamp="${oauth_timestamp}"`,
-    'User-Agent': 'spotify-discog/1.0 +http://localhost:3000'
+    'User-Agent': 'spotify-discog/1.0 +http://localhost:3000',
   }
 }
 
@@ -29,7 +29,15 @@ export const customGet = async (url: string, session: AuthSession | null) => {
 
   const headers = getHeaders(session)
 
-  const res = await fetch(url, { headers }).then(res => res.json());
+  // add invalidate cache with url
+  const urlWithTimestamp = `${url}&timestamp=${new Date().getTime()}`
+
+  const res = await fetch(urlWithTimestamp, { cache: 'no-store', headers }).then(res => res.json());
+
+  if (!res) {
+    // This will activate the closest `error.js` Error Boundary
+    throw new Error('Failed to fetch data')
+  }
 
   return res;
 };

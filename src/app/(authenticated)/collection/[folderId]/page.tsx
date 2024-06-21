@@ -20,15 +20,19 @@ interface SearchParams {
   sortOrder: string;
 }
 
-export async function generateMetadata({ folderId, searchParams } : any): Promise<Metadata> {
+export async function generateMetadata({ params, searchParams }: { params: Props; searchParams?: SearchParams }): Promise<Metadata> {
   const session = await getAuthSession();
+
   if (!session) {
     return {
       title: "Error in loading playlist data",
     };
   }
+
+  const { folderId } = params;
+
   return {
-    title: `Discog - Releases - Folder ${folderId} - Page ${searchParams.page}`,
+    title: `Discog - Releases - Folder ${folderId} - Page ${searchParams?.page || 1}`,
   };
 }
 
@@ -41,7 +45,9 @@ export default async function FolderPage({ params, searchParams }: { params: Pro
 
   const { folderId } = params;
 
-  const discogResponse = await getFolderById(session, folderId, searchParams) as DiscogResponse;
+  const defaultParams: SearchParams = { ...{ page: '1', perPage: '24', sort: 'artist', sortOrder: 'asc' }, ...searchParams };
+
+  const discogResponse = await getFolderById(session, folderId, defaultParams)
 
   return (
     <>
