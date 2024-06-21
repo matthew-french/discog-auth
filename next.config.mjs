@@ -4,6 +4,7 @@ const nextConfig = {
     domains: [
       'gravatar.com',
       'i.discogs.com',
+      'st.discogs.com',
     ]
   }
 };

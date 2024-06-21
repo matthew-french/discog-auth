@@ -1,9 +1,13 @@
+'use server'
+
 import Image from "next/image";
 
 import { getUserCollection } from '@/lib/actions'
 import { getAuthSession } from '@/utils/serverUtils'
 import { redirect } from 'next/navigation'
 import Link from "next/link"
+
+import { buttonVariants } from '@/components/ui/button'
 
 interface Folder {
   id: number;
@@ -56,7 +60,7 @@ export default async function Home() {
             <Link
             href={`/collection/${folder.id}`}
             key={folder.id}
-            className="flex items-center justify-between col-span-4 pr-4 truncate rounded-md group/item bg-paper-600 hover:bg-paper-400"
+            className={buttonVariants({ variant: 'link' })}
           >
             Link to Folder {folder.id}
           </Link>
@@ -66,6 +70,7 @@ export default async function Home() {
       </div>
       : <p>loading...</p>
       }
+
     </>
   )
 }

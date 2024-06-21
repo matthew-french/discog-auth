@@ -1,18 +1,26 @@
-
 import { getFolderById } from "@/lib/actions";
 import { getAuthSession } from "@/utils/serverUtils";
 
 import { Metadata } from "next";
-import Image from "next/image";
+
 import { redirect } from "next/navigation";
 
+import CollectionPage  from "@/components/collection-page"
+
+import DiscogResponse from "@/types/DiscogResponse";
+
 interface Props {
-  params: {
-    folderId: string;
-  };
+  folderId: string;
 }
 
-export async function generateMetadata({ params }: Props): Promise<Metadata> {
+interface SearchParams {
+  page: string;
+  perPage: string;
+  sort: string;
+  sortOrder: string;
+}
+
+export async function generateMetadata({ folderId, searchParams } : any): Promise<Metadata> {
   const session = await getAuthSession();
   if (!session) {
     return {
@@ -20,50 +28,24 @@ export async function generateMetadata({ params }: Props): Promise<Metadata> {
     };
   }
   return {
-    title: `Discog - Releases`,
+    title: `Discog - Releases - Folder ${folderId} - Page ${searchParams.page}`,
   };
 }
 
-export default async function FolderPage({ params }: Props) {
+export default async function FolderPage({ params, searchParams }: { params: Props; searchParams?: SearchParams }) {
   const session = await getAuthSession();
 
   if (!session) {
     redirect("/login");
   }
 
-  const folderId = params.folderId;
-  const data = await getFolderById(session, folderId);
+  const { folderId } = params;
 
-  const { releases } = data;
+  const discogResponse = await getFolderById(session, folderId, searchParams) as DiscogResponse;
 
   return (
     <>
-      <div className="">
-        {releases ? releases.map((item: any) => (
-          <div key={item.id} className="">
-            <p>ID: {item.basic_information.id}</p>
-            <p>Artist: {item.basic_information.artists[0].name}</p>
-            {item.basic_information.thumb ? (
-              <Image
-                src={item.basic_information.thumb}
-                alt={item.basic_information.name}
-                height={240}
-                width={240}
-                className="object-contain rounded-sm w-60 h-60"
-                priority
-              />
-            ) : (
-              <div className="w-full h-40">
-                no image
-              </div>
-            )}
-          </div>
-        )) : (
-          <div className="w-full h-40">
-            no image
-          </div>
-        )}
-      </div>
+      <CollectionPage pagination={discogResponse.pagination} releases={discogResponse.releases} />
     </>
   );
 }

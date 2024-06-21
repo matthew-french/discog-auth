@@ -16,7 +16,7 @@ const getHeaders = (session: AuthSession):Headers => {
   const oauth_timestamp = oauth_nonce;
 
   return {
-    'Content-Type': 'application  /json',
+    'Content-Type': 'application/json',
     'Authorization': `OAuth oauth_consumer_key="${process.env.DISCOGS_CONSUMER_KEY}", oauth_nonce="${oauth_nonce}", oauth_token="${session.user.accessToken}", oauth_signature="${process.env.DISCOG_SECRET}&${session.user.tokenSecret}", oauth_signature_method="PLAINTEXT", oauth_timestamp="${oauth_timestamp}"`,
     'User-Agent': 'spotify-discog/1.0 +http://localhost:3000'
   }
