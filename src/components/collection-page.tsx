@@ -22,7 +22,7 @@ type Product = {
   year: number;
   title: string;
   genres: string;
-  artist: string;
+  artist: { name: string; id: number; resourceUrl: string};
   styles: string;
   masterUrl: string;
   resourceUrl: string;
@@ -56,7 +56,11 @@ const CollectionPage: React.FC<DiscogResponse> = ({pagination, releases}) => {
       year: basic_information.year,
       title: basic_information.title,
       genres: basic_information.genres.join(', '),
-      artist: basic_information.artists.map(artist => artist.name).join(', '),
+      artist: {
+        name: basic_information.artists[0].name,
+        id: basic_information.artists[0].id,
+        resourceUrl: basic_information.artists[0].resource_url,
+      },
       styles: basic_information.styles.join(', '),
       masterUrl: basic_information.master_url,
       resourceUrl: basic_information.resource_url,
