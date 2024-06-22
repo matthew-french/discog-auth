@@ -33,6 +33,8 @@ export default async function Home() {
   const identity = await getIdentity(session)
 
   console.log('identity', identity)
+  console.log('session', (session))
+  console.log('folders', folders)
 
   return (
     <>

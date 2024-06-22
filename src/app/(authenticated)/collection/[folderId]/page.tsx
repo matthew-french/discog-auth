@@ -45,7 +45,7 @@ export default async function FolderPage({ params, searchParams }: { params: Pro
 
   const { folderId } = params;
 
-  const defaultParams: SearchParams = { ...{ page: '1', perPage: '24', sort: 'artist', sortOrder: 'asc' }, ...searchParams };
+  const defaultParams: SearchParams = { ...{ page: '1', perPage: '48', sort: 'artist', sortOrder: 'asc' }, ...searchParams };
 
   const discogResponse = await getFolderById(session, folderId, defaultParams)
 

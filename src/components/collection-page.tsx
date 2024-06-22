@@ -6,15 +6,14 @@
 "use client"
 
 import React, { useState, useEffect } from 'react';
+import { useTransition, animated } from 'react-spring';
 
-import Link from 'next/link';
-import Image from 'next/image';
 
 import RecordComponent from '@/components/record-component';
-import { Pagination, PaginationContent, PaginationItem, PaginationPrevious, PaginationLink, PaginationNext } from "@/components/ui/pagination"
+import CollectionPaginationcomponent from '@/components/collection-pagination-component';
 
 import DiscogResponse from "@/types/DiscogResponse";
-import { DiscogRecord, BasicInformation} from "@/types/DiscogRecord";
+import { DiscogRecord} from "@/types/DiscogRecord";
 
 type Product = {
   coverImage: string;
@@ -34,6 +33,19 @@ const CollectionPage: React.FC<DiscogResponse> = ({pagination, releases}) => {
   const [products, setProducts] = useState<Product[]>([]);
   const currentPage = pagination.page;
   const totalPages = pagination.pages;
+
+  const productsWithIndex = products.map((product, index) => ({
+    ...product,
+    index: index // Adding an index property
+  }));
+
+  // Inside your component
+  const transitions = useTransition(productsWithIndex, {
+    from: { opacity: 0, transform: 'translate3d(0,-40px,0)' },
+    enter: { opacity: 1, transform: 'translate3d(0,0px,0)' },
+    leave: { opacity: 0, transform: 'translate3d(0,-40px,0)' },
+    keys: product => product.id + '-' + product.index,
+  });
 
   useEffect(() => {
     // Convert releases to the desired format for products
@@ -57,38 +69,29 @@ const CollectionPage: React.FC<DiscogResponse> = ({pagination, releases}) => {
 
   return (
     <div className="container mx-auto px-4 md:px-6 py-8">
+      <div className="mb-8 flex justify-center">
+        <CollectionPaginationcomponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          perPage={pagination.per_page}
+          basePath={`/collection/1`}
+        />
+      </div>
       <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-6">
-        {products.map((product, index) => (
-          <RecordComponent key={`${product.id}-${index}`} {...product} />
-        ))}
+      {transitions((style, product) => (
+        <animated.div style={style} key={product.id}>
+          <RecordComponent {...product} />
+        </animated.div>
+      ))}
+
       </div>
       <div className="mt-8 flex justify-center">
-        <Pagination>
-          <PaginationContent>
-            <PaginationItem>
-              <PaginationPrevious
-                href={`/collection/1?page=${currentPage - 1}&perPage=24&sort=artist&sortOrder=asc`}
-                isActive={currentPage === 1}
-              />
-            </PaginationItem>
-            {Array.from({ length: totalPages }, (_, i) => i + 1).map((pageNumber) => (
-              <PaginationItem key={pageNumber}>
-                <PaginationLink
-                  href={`/collection/1?page=${pageNumber}&perPage=24&sort=artist&sortOrder=asc`}
-                  isActive={pageNumber === currentPage}
-                >
-                  {pageNumber}
-                </PaginationLink>
-              </PaginationItem>
-            ))}
-            <PaginationItem>
-              <PaginationNext
-                href={`/collection/1?page=${currentPage + 1}&perPage=24&sort=artist&sortOrder=asc`}
-                isActive={currentPage === totalPages}
-              />
-            </PaginationItem>
-          </PaginationContent>
-        </Pagination>
+        <CollectionPaginationcomponent
+          currentPage={currentPage}
+          totalPages={totalPages}
+          perPage={pagination.per_page}
+          basePath={`/collection/1`}
+        />
       </div>
     </div>
   )

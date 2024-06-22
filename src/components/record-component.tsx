@@ -27,7 +27,7 @@ const RecordComponent: React.FC<RecordProps> = ({
   formats,
 }) => (
   <div key={id} className="bg-white dark:bg-gray-950 rounded-lg shadow-lg overflow-hidden">
-    <div className="flex flex-col h-full">
+    <div className="flex flex-col w-full">
       <div className="relative w-full flex-grow">
         <Link href={`/record/${id}`}>
             <Image

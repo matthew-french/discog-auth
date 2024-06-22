@@ -29,10 +29,7 @@ export const customGet = async (url: string, session: AuthSession | null) => {
 
   const headers = getHeaders(session)
 
-  // add invalidate cache with url
-  const urlWithTimestamp = `${url}&timestamp=${new Date().getTime()}`
-
-  const res = await fetch(urlWithTimestamp, { cache: 'no-store', headers }).then(res => res.json());
+  const res = await fetch(url, { cache: 'no-store', headers }).then(res => res.json());
 
   if (!res) {
     // This will activate the closest `error.js` Error Boundary

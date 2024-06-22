@@ -31,10 +31,13 @@ export const getIdentity = async (session: AuthSession): Promise<any> => {
 }
 
 export async function getUserCollection(session: AuthSession): Promise<Folder[]> {
-  const data = await customGet(
-    `https://api.discogs.com/users/${session.user.name}/collection/folders`,
-    session
-  )
+
+  const url = `https://api.discogs.com/users/${session.user.name}/collection/folders`
+
+  console.log('url', url)
+  const data = await customGet(url, session)
+
+  console.log(data)
 
   return data.folders
 }
@@ -44,12 +47,10 @@ export const getFolderById = async (
   folderId = '1' as string,
   params: Partial<SearchParams>
 ): Promise<any> => {
-  const defaultParams: SearchParams = { page: '1', perPage: '12', sort: 'artist', sortOrder: 'asc' };
-  const searchParams: SearchParams = { ...defaultParams, ...params };
-  const { page, perPage, sort, sortOrder } = searchParams;
+  const { page, perPage, sort, sortOrder } = params;
 
 
-  console.log('searchParams', searchParams)
+  console.log('searchParams', params)
 
   const data = await customGet(
     `https://api.discogs.com/users/${session.user.name}/collection/folders/${folderId}/releases?page=${page}&per_page=${perPage}&sort=${sort}&sort_order=${sortOrder}`,
